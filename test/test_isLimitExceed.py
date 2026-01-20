@@ -15,10 +15,6 @@ def test_does_not_exceed_limit():
     events = [i for i in range(100)]  # 100 events within 100 seconds
     assert isLimitExceed(events) == False
 
-def test_does_exceed_limit():
-    events = [i for i in range(100)]  # 100 events within 100 seconds
-    assert isLimitExceed(events) == True
-
 def test_non_sorted_input():
     events = [10, 5, 1, 2, 5, 8, 3, 4] * 5  # 120 events but not exceeding limit in any 60s window
     assert isLimitExceed(events) == False
