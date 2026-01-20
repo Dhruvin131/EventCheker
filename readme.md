@@ -1,4 +1,21 @@
-# Overview
-In this repo i have improved one function for checking stream of events within 60 seconds, if the events exceeds 100 mark, we return True, else we just return false.
+# Eventchecker
+An eventchecker that checks for events and returns True when even exceeds specified time limit.
 
-I have also added the test cases using unittest module to test the functionality of the code.
+# Feature
+- Check for Events from event stream
+- Unittest using pytest
+
+# Installation
+pip install -r requirements.txt
+
+# Usage Example
+Run the Service using following command
+` Uvicorn app.main:app --reload `
+
+```
+Method type: Post
+Route: /events
+Body: lsEvents:[int, int, int....]
+```
+and now you can call the post api using `localhost:port/events` with events body as list of integers to call the route
+

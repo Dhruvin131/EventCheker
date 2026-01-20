@@ -1,5 +1,10 @@
-from collections import deque
 
+from collections import deque
+from fastapi.routing import APIRouter
+
+router = APIRouter()
+
+@router.post("/events")
 def isLimitExceed(lsEvents: list[int]) -> bool:
     """
     Function to check if the number of events exceeds the limit of 100 within 60 seconds.
@@ -26,4 +31,4 @@ def isLimitExceed(lsEvents: list[int]) -> bool:
     return False
 
 if __name__ == "__main__":
-    import u
+    pass
