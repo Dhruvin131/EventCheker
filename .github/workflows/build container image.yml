@@ -1,0 +1,45 @@
+name: CD - Build & Push Docker Image
+
+# Triggers
+on:
+  push:
+    tags:
+      - 'v*'                # Trigger on Git tags like v1.0.0, v2.1.3
+  workflow_dispatch:        # Manual trigger from GitHub UI
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1️⃣ Checkout repository
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      # 2️⃣ Log in to GitHub Container Registry
+      - name: Log in to GHCR
+        uses: docker/login-action@v2
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      # 3️⃣ Build Docker image and tag with Git tag
+      - name: Build Docker image
+        run: |
+          TAG=${GITHUB_REF##*/}   # Extract Git tag name, e.g., v1.0.0
+          echo "Building Docker image with tag $TAG"
+          docker build -t ghcr.io/${{ github.repository_owner }}/eventcheker:$TAG .
+
+      # 4️⃣ Add 'latest' tag to same image
+      - name: Tag image as latest
+        run: |
+          TAG=${GITHUB_REF##*/} 
+          docker tag ghcr.io/${{ github.repository_owner }}/eventcheker:$TAG ghcr.io/${{ github.repository_owner }}/eventcheker:latest
+
+      # 5️⃣ Push both tags to GHCR
+      - name: Push Docker image
+        run: |
+          TAG=${GITHUB_REF##*/} 
+          docker push ghcr.io/${{ github.repository_owner }}/eventcheker:$TAG
+          docker push ghcr.io/${{ github.repository_owner }}/eventcheker:latest
