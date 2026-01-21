@@ -29,17 +29,21 @@ jobs:
         run: |
           TAG=${GITHUB_REF##*/}   # Extract Git tag name, e.g., v1.0.0
           echo "Building Docker image with tag $TAG"
-          docker build -t ghcr.io/${{ github.repository_owner }}/eventcheker:$TAG .
+          # Convert repository owner to lowercase to avoid Docker errors
+          OWNER=$(echo "${GITHUB_REPOSITORY_OWNER}" | tr '[:upper:]' '[:lower:]')
+          docker build -t ghcr.io/$OWNER/eventcheker:$TAG .
 
-      # 4️⃣ Add 'latest' tag to same image
+      # 4️⃣ Tag image as 'latest' for dev/staging
       - name: Tag image as latest
         run: |
           TAG=${GITHUB_REF##*/} 
-          docker tag ghcr.io/${{ github.repository_owner }}/eventcheker:$TAG ghcr.io/${{ github.repository_owner }}/eventcheker:latest
+          OWNER=$(echo "${GITHUB_REPOSITORY_OWNER}" | tr '[:upper:]' '[:lower:]')
+          docker tag ghcr.io/$OWNER/eventcheker:$TAG ghcr.io/$OWNER/eventcheker:latest
 
       # 5️⃣ Push both tags to GHCR
       - name: Push Docker image
         run: |
           TAG=${GITHUB_REF##*/} 
-          docker push ghcr.io/${{ github.repository_owner }}/eventcheker:$TAG
-          docker push ghcr.io/${{ github.repository_owner }}/eventcheker:latest
+          OWNER=$(echo "${GITHUB_REPOSITORY_OWNER}" | tr '[:upper:]' '[:lower:]')
+          docker push ghcr.io/$OWNER/eventcheker:$TAG
+          docker push ghcr.io/$OWNER/eventcheker:latest
