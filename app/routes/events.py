@@ -4,8 +4,13 @@ from fastapi.routing import APIRouter
 
 router = APIRouter()
 
+from pydantic import BaseModel
+
+class EventsRequest(BaseModel):
+    lsEvents: list[int]
+
 @router.post("/events")
-def isLimitExceed(lsEvents: list[int]) -> bool:
+def isLimitExceed(eventReq: EventsRequest) -> bool:
     """
     Function to check if the number of events exceeds the limit of 100 within 60 seconds.
     
@@ -15,6 +20,7 @@ def isLimitExceed(lsEvents: list[int]) -> bool:
     Returns:
     bool: True if the number of events exceeds 100 within 60 seconds, False otherwise.
     """
+    lsEvents = eventReq.lsEvents
     try:
         lsEvents = sorted([int(i) for i in lsEvents])
     except Exception as e:
